@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#14532d">
+  <title>TSMS | Transit Summit Management System</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand-mark">T</div>
+    <div>
+      <p class="eyebrow">TRANSIT</p>
+      <h1>Summit Management System</h1>
+      <p class="tagline">Inter-School Senior Students Leadership &amp; Career Summit · Lead. Speak. Succeed.</p>
+    </div>
+  </header>
+
+  <nav class="tabs" aria-label="Main navigation">
+    <button class="tab active" data-view="apply">Online Application</button>
+    <button class="tab" data-view="status">Check Application</button>
+    <button class="tab" data-view="admin">Admin Dashboard</button>
+  </nav>
+
+  <main>
+    <section id="setupNotice" class="notice hidden"></section>
+
+    <section id="applyView" class="view">
+      <div class="hero">
+        <div>
+          <p class="eyebrow">STUDENT REGISTRATION</p>
+          <h2>Apply to participate in the Transit Summit</h2>
+          <p>Complete the form carefully. The registration fee is <strong>LRD 500</strong>. Submitting an application does not automatically confirm payment or guarantee approval.</p>
+        </div>
+        <div class="hero-badge"><span>LRD</span><strong>500</strong><small>Registration fee</small></div>
+      </div>
+
+      <form id="applicationForm" class="card form-grid">
+        <label>Full name *<input name="fullName" required maxlength="100" autocomplete="name"></label>
+        <label>Gender
+          <select name="gender">
+            <option value="">Prefer not to say</option><option>Female</option><option>Male</option><option>Other</option>
+          </select>
+        </label>
+        <label>Age *<input name="age" type="number" min="10" max="100" required></label>
+        <label>School name *<input name="school" required maxlength="150"></label>
+        <label>County *<select name="county" required>
+          <option value="">Choose county</option>
+          <option>Bomi</option><option>Bong</option><option>Gbarpolu</option><option>Grand Bassa</option>
+          <option>Grand Cape Mount</option><option>Grand Gedeh</option><option>Grand Kru</option><option>Lofa</option>
+          <option>Margibi</option><option>Maryland</option><option>Montserrado</option><option>Nimba</option>
+          <option>River Cess</option><option>River Gee</option><option>Sinoe</option>
+        </select></label>
+        <label>District / community<input name="district" maxlength="100"></label>
+        <label>Current class / grade *<input name="grade" required maxlength="60" placeholder="e.g. 10th Grade"></label>
+        <label>Phone number *<input name="phone" required type="tel" maxlength="40" autocomplete="tel" placeholder="+231 ..."></label>
+        <label>Email (optional)<input name="email" type="email" maxlength="150" autocomplete="email"></label>
+        <label>Emergency contact name<input name="emergencyName" maxlength="100"></label>
+        <label>Emergency contact phone<input name="emergencyPhone" type="tel" maxlength="40"></label>
+        <label class="full">Why do you want to attend? *<textarea name="motivation" required rows="4" maxlength="1200"></textarea></label>
+
+        <div class="full fee-panel">
+          <h3>Registration fee: LRD 500</h3>
+          <p>Submit your application first. If you have paid, provide the payment reference and (if available) a link to your payment receipt. Do not enter your mobile money PIN or password.</p>
+          <label>Payment status
+            <select name="paymentClaim">
+              <option value="Not yet paid">Not yet paid</option>
+              <option value="Paid - awaiting verification">Paid - awaiting verification</option>
+            </select>
+          </label>
+          <label>Payment reference / transaction ID (optional)<input name="paymentReference" maxlength="120"></label>
+          <label>Receipt link (optional)<input name="receiptUrl" type="url" maxlength="500" placeholder="https://..."></label>
+        </div>
+
+        <label class="full checkline"><input name="consent" type="checkbox" required> I confirm that the information supplied is accurate and agree that the summit organizers may use it to process my application.</label>
+        <div class="full actions">
+          <button class="btn primary" type="submit" id="submitApplication">Submit Application</button>
+          <span id="applicationMessage" class="message" role="status"></span>
+        </div>
+      </form>
+    </section>
+
+    <section id="statusView" class="view hidden">
+      <div class="section-heading"><p class="eyebrow">APPLICATION TRACKER</p><h2>Check your application status</h2><p>Enter the application ID you received after submitting the form.</p></div>
+      <form id="statusForm" class="card status-form">
+        <label>Application ID<input name="applicationId" required placeholder="e.g. TSMS-ABC12345"></label>
+        <button class="btn primary" type="submit">Check Status</button>
+      </form>
+      <div id="statusResult" aria-live="polite"></div>
+    </section>
+
+    <section id="adminView" class="view hidden">
+      <div class="section-heading"><p class="eyebrow">ORGANIZING COMMITTEE</p><h2>Administration dashboard</h2><p>Authorized team members only. Each committee member must have an account created by the system owner.</p></div>
+      <div id="adminLogin" class="card login-card">
+        <form id="loginForm">
+          <label>Email address<input name="email" type="email" required autocomplete="username"></label>
+          <label>Password<input name="password" type="password" required autocomplete="current-password"></label>
+          <button class="btn primary" type="submit">Sign In</button>
+          <p id="loginMessage" class="message" role="status"></p>
+        </form>
+      </div>
+
+      <div id="adminPanel" class="hidden">
+        <div class="admin-topline"><p id="signedInLabel"></p><button id="logoutButton" class="btn secondary">Sign Out</button></div>
+        <div class="stats-grid">
+          <article class="stat-card"><span>Total applications</span><strong id="statTotal">0</strong></article>
+          <article class="stat-card"><span>Pending review</span><strong id="statPending">0</strong></article>
+          <article class="stat-card"><span>Approved</span><strong id="statApproved">0</strong></article>
+          <article class="stat-card"><span>Payment awaiting verification</span><strong id="statPayment">0</strong></article>
+          <article class="stat-card"><span>Verified participants</span><strong id="statVerified">0</strong></article>
+          <article class="stat-card"><span>Expected fee total (approved paid records)</span><strong id="statRevenue">LRD 0</strong></article>
+        </div>
+        <div class="toolbar card">
+          <input id="searchApplications" type="search" placeholder="Search name, school, county, or application ID">
+          <select id="filterStatus"><option value="">All application statuses</option><option>Pending</option><option>Approved</option><option>Rejected</option></select>
+          <select id="filterPayment"><option value="">All payment statuses</option><option>Not yet paid</option><option>Paid - awaiting verification</option><option>Verified paid</option></select>
+          <button id="exportCsv" class="btn secondary">Export CSV</button>
+        </div>
+        <div class="card table-card">
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Application ID</th><th>Student</th><th>School / County</th><th>Application</th><th>Payment</th><th>Participant</th><th>Actions</th></tr></thead>
+              <tbody id="applicationsTable"><tr><td colspan="7">Sign in to load applications.</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        <p class="small-note">Administrative changes are recorded with a timestamp. Verify payment evidence independently before marking a payment as verified.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer><strong>TRANSIT</strong> · Transit Summit Management System · Protect applicant information and use it only for summit administration.</footer>
+
+  <dialog id="detailDialog">
+    <div class="dialog-head"><h2>Application details</h2><button id="closeDialog" class="icon-button" aria-label="Close">×</button></div>
+    <div id="detailContent"></div>
+  </dialog>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

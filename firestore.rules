@@ -1,0 +1,46 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Public users may submit applications, but cannot read, edit, or delete records.
+    match /applications/{applicationId} {
+      allow create: if
+        request.resource.data.keys().hasAll([
+          'applicationId', 'fullName', 'age', 'school', 'county', 'grade',
+          'phone', 'motivation', 'applicationStatus', 'paymentStatus',
+          'participantStatus', 'feeLrd', 'createdAt', 'updatedAt'
+        ])
+        && request.resource.data.applicationId is string
+        && request.resource.data.fullName is string
+        && request.resource.data.fullName.size() > 1
+        && request.resource.data.age is int
+        && request.resource.data.age >= 10
+        && request.resource.data.age <= 100
+        && request.resource.data.school is string
+        && request.resource.data.phone is string
+        && request.resource.data.motivation is string
+        && request.resource.data.applicationStatus == 'Pending'
+        && request.resource.data.participantStatus == 'Not verified'
+        && request.resource.data.feeLrd == 500;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Create each admin document manually in the Firebase console:
+    // collection: admins; document ID: that user's Firebase Auth UID.
+    match /admins/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    // Public status lookup is disabled until a trusted backend/Cloud Function
+    // maintains status-only documents in this collection. Admins can read/write.
+    match /publicApplicationStatus/{statusId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}
