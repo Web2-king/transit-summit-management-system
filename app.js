@@ -167,16 +167,11 @@ $("loginForm").addEventListener("submit", async event => {
     event.currentTarget.reset();
     showMessage(loginMessage, "");
   } catch (err) {
-    catch (err) {
-console.error("TSMS login error:", err);
-showMessage(
-loginMessage,
-"Login failed: ${err.code || err.message || "Unknown error"}",
-true
-);
-}
+    console.error(err);
+    showMessage(loginMessage, "Sign-in failed. Check your details or contact the system owner.", true);
+  }
 });
-$("logoutButton").addEventListener("click", async () => { if (auth) await signOut(auth); });
+$("logoutButton"tonutButton"n").addEventListener("click", async () => { if (auth) await signOut(auth); });
 
 function startApplicationsListener() {
   if (unsubscribeApplications || !db) return;
