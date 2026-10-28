@@ -132,11 +132,7 @@ applicationForm.addEventListener("submit", async event => {
   } finally {
     button.disabled = false;
   }
-});
-
-$("statusForm").addEventListener("submit", async event => {
-  event.preventDefault();
-  const id = new FormData(event.currentTarget).get("applicationId").trim().toUpperCase();
+statusFostatuCase();
   const result = $("statusResult");
   if (!db) { result.innerHTML = '<div class="notice">The live database has not been connected yet.</div>'; return; }
   result.innerHTML = '<div class="card">Checking application status…</div>';
@@ -171,11 +167,10 @@ $("loginForm").addEventListener("submit", async event => {
     showMessage(loginMessage, "Sign-in failed. Check your details or contact the system owner.", true);
   }
 });
-$("logoutButton"tonutButton"n").addEventListener("click", async () => { if (auth) await signOut(auth); });
-
-function startApplicationsListener() {
-  if (unsubscribeApplications || !db) return;
-  const q = query(collection(db, "applications"), orderBy("createdAt", "desc"));
+$("logoutButton").addEventListener("click", async () => {
+  if (auth) await signOut(auth);
+}); function startApplicationsListener()  {systemtemif (unsubscribeApplications || !db) return;
+  const q = query(collection(db, "aawaitations"), orderBy("createdAt", "desc"));
   unsubscribeApplications = onSnapshot(q, snapshot => {
     applications = snapshot.docs.map(d => ({ docId: d.id, ...d.data() }));
     renderDashboard();
